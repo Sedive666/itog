@@ -506,12 +506,8 @@ final Map<Section, CollectionSpec> catalog = {
     title: 'Заказы',
     singular: 'заказ',
     searchFields: const ['number'],
-    sortFields: const {
-      'number': 'number',
-      'price': 'price',
-      'created': 'created',
-    },
-    defaultSort: '-created',
+    sortFields: const {'number': 'number', 'price': 'price'},
+    defaultSort: '-number',
     filters: const [
       FilterSpec(
         key: 'status',
@@ -602,8 +598,8 @@ final Map<Section, CollectionSpec> catalog = {
     title: 'Отзывы',
     singular: 'отзыв',
     searchFields: const ['text'],
-    sortFields: const {'rating': 'rating', 'created': 'created'},
-    defaultSort: '-created',
+    sortFields: const {'rating': 'rating'},
+    defaultSort: '-rating',
     filters: const [
       FilterSpec(
         key: 'sneaker',

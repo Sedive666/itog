@@ -6,6 +6,7 @@ import 'package:shoe_store/models/record.dart';
 import 'package:shoe_store/models/validators.dart';
 
 void main() {
+  sortRegression();
   group('ListQuery из адресной строки', () {
     test('значения по умолчанию не попадают в адрес', () {
       const q = ListQuery();
@@ -154,5 +155,27 @@ void main() {
       final r = PbRecord('x', {'deleted': '2026-10-05 08:00:00.000Z'});
       expect(r.isDeleted, isTrue);
     });
+  });
+}
+
+void sortRegression() {
+  group('сортировка разделов', () {
+    test(
+      'поля сортировки существуют в схеме: у коллекций нет поля created',
+      () {
+        for (final spec in catalog.values) {
+          expect(
+            spec.defaultSort.replaceFirst('-', ''),
+            isNot('created'),
+            reason: spec.title,
+          );
+          expect(
+            spec.sortFields.values,
+            isNot(contains('created')),
+            reason: spec.title,
+          );
+        }
+      },
+    );
   });
 }

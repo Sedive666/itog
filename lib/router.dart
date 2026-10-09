@@ -1,3 +1,4 @@
+import 'package:flutter/widgets.dart';
 import 'package:go_router/go_router.dart';
 
 import 'core/permissions.dart';
@@ -82,22 +83,34 @@ GoRouter createRouter(AuthNotifier auth, {String initialLocation = '/'}) {
       ),
       GoRoute(
         path: '/:section',
-        builder: (context, state) => ListScreen(
-          section: _sectionOf(state.pathParameters['section']!),
-          params: state.uri.queryParameters,
-        ),
+        builder: (context, state) {
+          final section = _sectionOf(state.pathParameters['section']!);
+          // Ключ раздела: при переходе между разделами экран создаётся заново, а не переиспользует состояние.
+          return ListScreen(
+            key: ValueKey(section),
+            section: section,
+            params: state.uri.queryParameters,
+          );
+        },
       ),
       GoRoute(
         path: '/:section/new',
-        builder: (context, state) =>
-            FormScreen(section: _sectionOf(state.pathParameters['section']!)),
+        builder: (context, state) {
+          final section = _sectionOf(state.pathParameters['section']!);
+          return FormScreen(key: ValueKey('new-$section'), section: section);
+        },
       ),
       GoRoute(
         path: '/:section/:id/edit',
-        builder: (context, state) => FormScreen(
-          section: _sectionOf(state.pathParameters['section']!),
-          id: state.pathParameters['id'],
-        ),
+        builder: (context, state) {
+          final section = _sectionOf(state.pathParameters['section']!);
+          final id = state.pathParameters['id'];
+          return FormScreen(
+            key: ValueKey('$section-$id'),
+            section: section,
+            id: id,
+          );
+        },
       ),
     ],
     errorBuilder: (context, state) => const NotFoundScreen(),
