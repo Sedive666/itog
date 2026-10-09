@@ -1,0 +1,27 @@
+name: shoe_store
+description: "Магазин кроссовок — итоговый проект на Flutter Web и PocketBase."
+publish_to: 'none'
+
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.9.2
+
+dependencies:
+  flutter:
+    sdk: flutter
+  go_router: 17.2.3
+  provider: ^6.1.5+1
+  flutter_web_plugins:
+    sdk: flutter
+  dio: ^5.9.0
+  shared_preferences: ^2.5.5
+  web: ^1.1.1
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^5.0.0
+
+flutter:
+  uses-material-design: true

@@ -1,0 +1,72 @@
+# Сборка и публикация на GitHub Pages при каждом изменении ветки main.
+# Перед сборкой — те же проверки, что и локально: анализатор, форматирование,
+# тесты. Если хоть одна не прошла, публикации не будет.
+name: Сборка и публикация
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Одновременно идёт только одна публикация; новая отменяет предыдущую.
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+env:
+  # Адрес PocketBase задаётся при сборке. Страница по HTTPS обращается к локальному
+  # серверу: localhost браузер считает доверенным, смешанное содержимое не блокируется.
+  PB_URL: http://127.0.0.1:8090
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      # Включает GitHub Pages в настройках репозитория, если он ещё не включён,
+      # и подставляет базовый путь сайта. Без этого шага публикация падает.
+      - uses: actions/configure-pages@v5
+        with:
+          enablement: true
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          flutter-version: 3.35.3
+          cache: true
+      - run: flutter pub get
+      - name: Анализатор
+        run: flutter analyze
+      - name: Форматирование
+        run: dart format --set-exit-if-changed lib test
+      - name: Тесты
+        run: flutter test
+      - name: Сборка
+        # Сайт лежит в подкаталоге по имени репозитория, поэтому базовый путь
+        # обязателен: без него браузер искал бы main.dart.js в корне домена.
+        run: >-
+          flutter build web --release
+          --base-href /${{ github.event.repository.name }}/
+          --dart-define=PB_URL=$PB_URL
+      - name: Страница 404 для прямых ссылок
+        # GitHub Pages не умеет перенаправлять неизвестные пути на index.html,
+        # но отдаёт 404.html. Её копия с index.html загружает приложение, и
+        # оно само разбирает адрес и открывает нужный экран.
+        run: cp build/web/index.html build/web/404.html
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: build/web
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
