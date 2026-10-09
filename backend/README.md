@@ -26,6 +26,7 @@ https://github.com/pocketbase/pocketbase/releases (Windows, amd64) и полож
 | 1700000004 | роли и правила доступа |
 | 1700000005 | учётные записи admin, manager, client |
 | 1700000006 | каталог для показа: бренды, кроссовки, акция, карта лояльности |
+| 1700000007 | тестовые заказы и отзывы для разделов «Заказы», «Отзывы» и «Отчёт» |
 
 Учётные записи (вход по почте): admin@shop.test / admin123, manager@shop.test / manager123, client@shop.test / client123.
 
