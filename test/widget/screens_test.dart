@@ -108,6 +108,22 @@ void main() {
     );
   });
 
+  group('навигация', () {
+    testWidgets('переход между разделами меняет экран и данные', (
+      tester,
+    ) async {
+      final api = FakeRecordsApi(data: brands);
+      await pumpApp(tester, role: Role.manager, api: api, location: '/brands');
+      expect(find.text('Nike'), findsOneWidget);
+
+      await tester.tap(find.text('Категории'));
+      await tester.pumpAndSettle();
+
+      expect(find.text('Nike'), findsNothing);
+      expect(find.text('Добавить категория'), findsOneWidget);
+    });
+  });
+
   group('адаптивная раскладка', () {
     testWidgets('360 пикселей: карточки и нижняя панель', (tester) async {
       await pumpApp(
