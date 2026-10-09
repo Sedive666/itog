@@ -1,0 +1,22 @@
+# PocketBase в интернете: бесплатный веб-сервис Render из backend/Dockerfile.
+# Создаётся в панели Render командой New -> Blueprint (выбрать этот репозиторий).
+# Пересобирается только при изменениях в папке backend.
+services:
+  - type: web
+    name: itog-pocketbase
+    runtime: docker
+    plan: free
+    region: frankfurt
+    dockerfilePath: ./backend/Dockerfile
+    dockerContext: ./backend
+    healthCheckPath: /api/health
+    autoDeployTrigger: commit
+    buildFilter:
+      paths:
+        - backend/**
+    envVars:
+      - key: PB_SUPERUSER_EMAIL
+        value: admin@itog.local
+      # Пароль суперпользователя панели /_/ — случайный, виден в настройках сервиса на Render.
+      - key: PB_SUPERUSER_PASSWORD
+        generateValue: true

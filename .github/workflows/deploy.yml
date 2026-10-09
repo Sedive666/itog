@@ -19,9 +19,10 @@ concurrency:
   cancel-in-progress: true
 
 env:
-  # Адрес PocketBase задаётся при сборке. Страница по HTTPS обращается к локальному
-  # серверу: localhost браузер считает доверенным, смешанное содержимое не блокируется.
-  PB_URL: http://127.0.0.1:8090
+  # Адрес PocketBase задаётся при сборке. Сайт открывается по HTTPS, поэтому сервер тоже по HTTPS:
+  # PocketBase размещён на Render (render.yaml). Если у сервиса другой адрес, его задают
+  # переменной репозитория PB_URL (Settings -> Secrets and variables -> Actions -> Variables).
+  PB_URL: ${{ vars.PB_URL || 'https://itog-pocketbase.onrender.com' }}
 
 jobs:
   build:
